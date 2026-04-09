@@ -1,0 +1,65 @@
+import funkin.modding.module.Module;
+import funkin.modding.module.ModuleHandler;
+import funkin.play.PlayState;
+import flixel.FlxG;
+import flixel.FlxSprite;
+import flixel.ui.FlxBar;
+import flixel.util.FlxColor;
+import flixel.tweens.FlxTween;
+import flixel.tweens.FlxEase;
+import funkin.Conductor;
+import Reflect;
+import Std;
+import Type;
+
+class VSDK extends Module {
+    public var registry:Dynamic;
+    public var _i:Int = 0;
+
+    public function new() {
+        super("v_sdk", 100);
+        this.registry = {}; 
+    }
+
+    /* --- DATA MANAGEMENT --- */
+    public function saveVal(id:String, val:Dynamic) { Reflect.setField(this.registry, id, val); }
+    public function getVal(id:String, def:Dynamic) { 
+        var v = Reflect.field(this.registry, id); 
+        return (v != null) ? v : def; 
+    }
+    public function getMisses() { return (PlayState.instance != null) ? PlayState.instance.songMisses : 0; }
+    public function log(msg:String) { trace("[V-SDK] " + msg); }
+
+    /* --- UI & VISUALS --- */
+    public function setUIVisible(b:Bool) { 
+        var p = PlayState.instance;
+        if(p == null) return;
+        if(p.healthBar != null) { p.healthBar.visible = b; p.healthBarBG.visible = b; p.iconP1.visible = b; p.iconP2.visible = b; }
+        if(p.scoreText != null) p.scoreText.visible = b;
+    }
+    public function setBarCol(bar:FlxBar, empty:Int, fill:Int) { 
+        if(bar != null) { bar.createFilledBar(empty, fill); bar.updateBar(); } 
+    }
+    public function setHUDAlpha(a:Float) { if (PlayState.instance != null) PlayState.instance.camHUD.alpha = a; }
+
+    /* --- AUDIO --- */
+    public function setPitch(p:Float) { if(FlxG.sound.music != null) FlxG.sound.music.pitch = p; }
+
+    /* --- UNIVERSAL SEARCH ENGINE --- */
+    public function getTarget(cl:String, prop:String, val:Dynamic):Dynamic {
+        if (PlayState.instance == null) return null;
+        this._i = 0;
+        var mbs = PlayState.instance.members;
+        while (this._i < mbs.length) {
+            var item = mbs[this._i];
+            if (item != null) {
+                var className = Type.getClassName(Type.getClass(item));
+                if (className == cl) {
+                    if (Reflect.getProperty(item, prop) == val) return item;
+                }
+            }
+            this._i++;
+        }
+        return null;
+    }
+} // <--- ESTA llave es la que faltaba
