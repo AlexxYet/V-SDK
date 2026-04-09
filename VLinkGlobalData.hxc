@@ -1,0 +1,28 @@
+import funkin.modding.module.Module;
+import funkin.save.Save;
+
+/**
+ * GlobalData Module
+ * A universal data proxy. It doesn't care WHAT it stores.
+ */
+class GlobalData extends Module {
+    public function new() {
+        super("global_data");
+    }
+
+    /**
+     * Store any value in a specific key.
+     */
+    public function setData(key:String, value:Dynamic) {
+        Save.instance.modOptions.set(key, value);
+        Save.instance.flush();
+    }
+
+    /**
+     * It retrieves any value. If it does not exist, it returns the 'defaultValue'.
+     */
+    public function getData(key:String, defaultValue:Dynamic):Dynamic {
+        var data = Save.instance.modOptions.get(key);
+        return (data != null) ? data : defaultValue;
+    }
+}
