@@ -1,4 +1,9 @@
 #  V-SDK: Universal Modding Framework
+<p align="center">
+  <img src="Assets/cover.png" alt="V-SDK Logo" width="600">
+</p>
+
+
 **Stability. Interoperability. Power.**
 
 V-SDK is a high-performance, standardized API designed specifically for **Friday Night Funkin' V-Slice** on Mobile (Android) and PC. It acts as a bridge between mods, preventing common engine crashes and providing a unified toolset for developers.
